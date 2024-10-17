@@ -1,12 +1,33 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate for redirection
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Login: React.FC = () => {
-    const navigate = useNavigate(); // Initialize the navigate function
+    const navigate = useNavigate();
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
 
     const handleSubmit = (event: React.FormEvent) => {
-        event.preventDefault(); // Prevent default form submission
-        navigate('/dashboard'); // Redirect to the dashboard
+        event.preventDefault();
+        navigate ('/dashboard');
+    };
+
+    const handleGoogleLogin = () => {
+        const CLIENT_ID = process.env.REACT_APP_CLIENT_ID;
+        const REDIRECT_URI = 'http://localhost:5173/callback';
+        const SCOPE = 'https://www.googleapis.com/auth/userinfo.profile';
+
+        if (!CLIENT_ID) {
+          console.error('CLIENT_ID is not defined in .env file');
+          return;
+        }
+
+        const authUrl = `https://accounts.google.com/o/oauth2/auth?` +
+                        `client_id=${CLIENT_ID}&` +
+                        `redirect_uri=${REDIRECT_URI}&` +
+                        `response_type=code&` +
+                        `scope=${encodeURIComponent(SCOPE)}`;
+
+        window.location.href = authUrl;
     };
 
     return (
@@ -15,13 +36,13 @@ const Login: React.FC = () => {
                 {`
                     html, body {
                         margin: 0;
-                        height: 100%; /* Ensure the body takes full height */
+                        height: 100%;
                         font-family: 'Arial', sans-serif;
                     }
                     .container {
                         display: flex;
                         width: 100%;
-                        height: 100vh; /* Set the container height to full viewport height */
+                        height: 100vh;
                     }
                     .left {
                         flex: 1;
@@ -62,8 +83,8 @@ const Login: React.FC = () => {
                         margin: 10px 0;
                         border: none;
                         border-radius: 5px;
-                        font-size: 1em; /* Increase font size for better visibility */
-                        color: #333; /* Change text color for better contrast */
+                        font-size: 1em;
+                        color: #333;
                     }
                     .form button {
                         padding: 10px;
@@ -76,6 +97,23 @@ const Login: React.FC = () => {
                     }
                     .form button:hover {
                         background-color: #5A7AD1;
+                    }
+                    .google-button {
+                        display: flex;
+                        align-items: center;
+                        padding: 10px;
+                        margin: 20px 0;
+                        border: none;
+                        border-radius: 5px;
+                        background-color: #4285F4;
+                        color: #ffffff;
+                        cursor: pointer;
+                    }
+                    .google-button:hover {
+                        background-color: #3B5998;
+                    }
+                    .google-icon {
+                        margin-right: 10px;
                     }
                 `}
             </style>
@@ -92,13 +130,34 @@ const Login: React.FC = () => {
                     <h1>Welcome Back!</h1>
                     <p>
                         Don't have an account yet? 
-                        <a href="/signup">   Create an Account</a>
+                        <a href="/signup"> Create an Account</a>
                     </p>
                     <form className="form" onSubmit={handleSubmit}>
-                        <input placeholder="Username" type="text" />
-                        <input placeholder="Password" type="password" />
+                        <input 
+                            placeholder="Username" 
+                            type="text" 
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            required
+                        />
+                        <input 
+                            placeholder="Password" 
+                            type="password" 
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
                         <button type="submit">Login</button>
                     </form>
+                    <button className="google-button" onClick={handleGoogleLogin}>
+                        <svg className="google-icon" width="18" height="18" viewBox="0 0 18 18">
+                            <path d="M16.51 8H8.98v3h4.6V14h3Z" fill="#FFC107" />
+                            <path d="M4.5 12.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm7  0c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM2 12.5C2 11.67 2.67 11 3.5 11h11c.83 0 1.5.67 1.5 1.5v1c0 .83-.67 1.5-1.5 1.5h-11c-.83 0-1.5-.67-1.5-1.5v-1z" fill="#FF3E30" />
+                            <path d="M7 6h3v3H7V6z" fill="#34A853" />
+                            <path d="M7 9h3v3H7V9z" fill="#FFC107" />
+                        </svg>
+                        <span>Login with Google</span>
+                    </button>
                 </div>
             </div>
         </div>

@@ -3,25 +3,23 @@ import { useNavigate } from 'react-router-dom'; // Import useNavigate for redire
 
 const SignUp: React.FC = () => {
     const navigate = useNavigate(); // Initialize the navigate function
-    const [showDialog, setShowDialog] = useState(false); // State to control dialog visibility
-    const [redirectToLogin, setRedirectToLogin] = useState(false); // State to control redirection to login
+    const [username, setUsername] = useState(''); // State for username
+    const [email, setEmail] = useState(''); // State for email
+    const [password, setPassword] = useState(''); // State for password
+    const [showDialog, setShowDialog] = useState(false);
 
     const handleSubmit = (event: React.FormEvent) => {
         event.preventDefault(); // Prevent default form submission
         setShowDialog(true); // Show success dialog
 
-        // Redirect to dashboard after 3 seconds
+        // Redirect to login after 3 seconds
         setTimeout(() => {
-            navigate('/dashboard'); // Redirect to the dashboard after sign-up
+            navigate('/login'); // Redirect to login after sign-up
         }, 3000);
     };
 
     const handleLoginRedirect = () => {
-        setShowDialog(false); // Hide the dialog
-        setRedirectToLogin(true); // Set redirect to login
-        setTimeout(() => {
-            navigate('/login'); // Redirect to login after 3 seconds
-        }, 3000);
+        navigate('/login'); // Redirect to login
     };
 
     return (
@@ -122,11 +120,29 @@ const SignUp: React.FC = () => {
                     <p>
                         Already have an account? 
                         <a onClick={handleLoginRedirect}> Login</a>
-                    </ p>
+                    </p>
                     <form className="form" onSubmit={handleSubmit}>
-                        <input placeholder="Username" type="text" required />
-                        <input placeholder="Email" type="email" required />
-                        <input placeholder="Password" type="password" required />
+                        <input 
+                            placeholder="Username" 
+                            type="text" 
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)} // Update state on change
+                            required
+                        />
+                        <input 
+                            placeholder="Email" 
+                            type="email" 
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)} // Update state on change
+                            required
+                        />
+                        <input 
+                            placeholder="Password" 
+                            type="password" 
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)} // Update state on change
+                            required
+                        />
                         <button type="submit">Create Account</button>
                     </form>
                 </div>
@@ -136,12 +152,7 @@ const SignUp: React.FC = () => {
                     <p>Account created successfully!</p>
                 </div>
             )}
-            {redirectToLogin && (
-                <div className="dialog">
-                    <p>Redirecting to login...</p>
-                </div>
-            )}
- </div>
+        </div>
     );
 };
 
